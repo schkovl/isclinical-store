@@ -93,7 +93,7 @@ function page({ title, desc, canonicalPath, body, depth = 0, current = "" }) {
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Archivo:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="${r}/css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231c2422'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='%23f6f7f5' font-family='serif'>S</text></svg>">
 </head>
@@ -137,9 +137,9 @@ function buyButton(p, r) {
 
 function card(p, r) {
   return `      <a class="card reveal" href="${r}/products/${p.slug}.html">
-        <span class="sku">${p.sku}</span>
         ${p.bestseller ? '<span class="flag">Bestseller</span>' : ""}
-        <span class="art">${bottleArt(p)}</span>
+        <span class="art-frame"><span class="art">${bottleArt(p)}</span></span>
+        <span class="sku">${p.sku}</span>
         <h3>${p.name}</h3>
         <p class="tagline">${p.tagline}</p>
         <span class="price-row"><span>${money(p.price)}</span><span class="go">→</span></span>
@@ -165,14 +165,19 @@ function indexPage() {
           <h1 id="hero-heading">Skin, treated as <em>science</em>.</h1>
           <p class="hero-lede">Every iS CLINICAL® product we ship is sourced directly through
           authorized distribution — fresh batches, full potency, no gray market. Build your
-          protocol in four steps and let the chemistry work.</p>
+          protocol across eight steps and let the chemistry work.</p>
           <div class="hero-actions">
-            <a class="btn" href="shop.html">Shop the full line</a>
+            <a class="btn accent" href="shop.html">Shop the full line</a>
             <a class="btn ghost" href="about.html">Why buy from a stockist</a>
+          </div>
+          <div class="stat-strip">
+            <div><strong>${products.length}</strong><span>Formulas</span></div>
+            <div><strong>${steps.length}</strong><span>Protocol steps</span></div>
+            <div><strong>100%</strong><span>Authorized stock</span></div>
           </div>
         </div>
         <aside class="specimen" aria-label="Featured product">
-          <span class="art">${bottleArt(hero)}</span>
+          <span class="art-frame"><span class="art">${bottleArt(hero)}</span></span>
           <dl class="specimen-meta">
             <div><dt>Specimen</dt><dd>${hero.name}</dd></div>
             <div><dt>Step</dt><dd>${stepById[hero.step].num} ${stepById[hero.step].label}</dd></div>
@@ -319,21 +324,35 @@ ${related.map((x) => card(x, "..")).join("\n")}
     <article class="wrap pdp">
       <div class="pdp-art"><span class="art">${bottleArt(p)}</span></div>
       <div>
-        <p class="mono">Step ${s.num} · ${s.label} · ${p.sku}${p.bestseller ? " · Bestseller" : ""}</p>
+        <div class="eyebrow">
+          <p class="mono">Step ${s.num} · ${s.label} · ${p.sku}</p>
+          ${p.bestseller ? '<span class="flag">Bestseller</span>' : ""}
+        </div>
         <h1>${p.name}</h1>
         <p class="tagline">${p.tagline}</p>
         <p class="price">${money(p.price)} <small>${p.size}</small></p>
         <p>${p.desc}</p>
-        <table class="spec-table">
-          <tbody>
-            <tr><th scope="row">Key actives</th><td>${p.actives.join(", ")}</td></tr>
-            <tr><th scope="row">Best for</th><td>${p.skin}</td></tr>
-            <tr><th scope="row">Size</th><td>${p.size}</td></tr>
-            <tr><th scope="row">Protocol step</th><td>${s.num} — ${s.label}</td></tr>
-            <tr><th scope="row">Sourcing</th><td>Genuine iS CLINICAL®, authorized distribution</td></tr>
-          </tbody>
-        </table>
-        ${buyButton(p, "..")}
+
+        <div class="buy-box">
+          ${buyButton(p, "..")}
+        </div>
+
+        <div class="tab-block">
+          <h4>Key ingredients</h4>
+          <div class="chip-row">${p.actives.map((a) => `<span class="chip">${a}</span>`).join("")}</div>
+        </div>
+        <div class="tab-block">
+          <h4>Best for</h4>
+          <p>${p.skin}</p>
+        </div>
+        <div class="tab-block">
+          <h4>How to use</h4>
+          <p>${p.how}</p>
+        </div>
+        <div class="tab-block">
+          <h4>Sourcing</h4>
+          <p>Genuine iS CLINICAL®, authorized distribution — full size ${p.size}.</p>
+        </div>
       </div>
     </article>
 ${relatedHtml}
